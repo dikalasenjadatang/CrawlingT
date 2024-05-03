@@ -3,162 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Twitter Search</title>
+    <title>Social Media Scraper</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #000000;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 20px;
+            
         }
-
-        h2 {
-            color: #1da1f2;
+        h1 {
+            color: #333;
             text-align: center;
+            margin-top: 100px;
         }
-
-        form {
+        .logo i {
+            font-size: 64px;
+            margin: 0 10px;
+        }
+        .form-container {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+            margin: auto;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        .logo {
+            cursor: pointer;
+            text-align: center;
             margin-bottom: 20px;
-            text-align: center;
-            color: #ffffff;
         }
-
+        div {
+            margin-bottom: 10px;
+        }
         label {
-            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
         }
-
         input[type="text"] {
-            width: 20%;
+            width: calc(100% - 22px);
             padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            border-radius: 5px;
             border: 1px solid #ccc;
+            border-radius: 16px;
+            margin-top: 3px;
+            margin-bottom: 6px;
         }
-
-        input[type="submit"] {
-            background-color: #1da1f2;
+        button {
+            background-color: #007BFF;
             color: white;
-            padding: 10px 20px;
             border: none;
-            border-radius: 5px;
+            padding: 10px 20px;
+            border-radius: 16px;
             cursor: pointer;
         }
-        .action-link {
-        color: #657786;
-        font-size: 14px;
-        margin-right: 10px;
-        text-decoration: none;
-        }
-
-        .action-link i {
-            margin-right: 5px;
-        }
-
-        .action-link:hover {
-            text-decoration: underline;
-            color: #1da1f2;
-        }
-        .card {
-        background-color: rgb(255, 255, 255);
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgb(255, 255, 255);
-        padding: 20px;
-        margin-bottom: 20px;
-        width: 60%; /* Atur lebar card */
-        margin-left: auto; /* Rata tengah */
-        margin-right: auto; /* Rata tengah */
-        }
-
-        .tweet-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .profile-pic {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .tweet-info {
-            flex-grow: 1;
-        }
-
-        .tweet-text {
-            margin-bottom: 10px;
-        }
-
-        .tweet-media {
-            margin-top: 10px;
-        }
-
-        .media {
-            max-width: 30%; 
-            max-height: 200px; 
-            border-radius: 5px;
-        }
-
-        .tweet-actions a {
-            color: #ffffff;
-            margin-right: 10px;
-            text-decoration: none;
-        }
-
-        .tweet-actions a:hover {
-            text-decoration: underline;
-        }
-        .tweet-text, .tweet-info, .tweet-date, .tweet-actions a {
-        color: #000000; /* Ubah warna teks menjadi putih */
-        }
-        p.no-tweets {
-            color: #777;
-            text-align: center;
-        }
-        .right-align {
-        float: right;
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h2>Twitter Search</h2>
-    <form action="/" method="post">
-        <label for="keyword">Keyword:</label><br>
-        <input type="text" id="keyword" name="keyword"><br>
-        <input type="submit" value="Submit">
-    </form>
-    {% if twit %}
-        {% for tweet in twit %}
-            <div class="card">
-                <div class="tweet-header">
-                    <img src="https://www.gravatar.com/avatar/?d=mp" class="profile-pic">
-                    <div class="tweet-info">
-                        <strong>@username</strong>
-                        <span class="tweet-date">{{ tweet.created_at }}</span>
-                    </div>
-                </div>
-                <p class="tweet-text">{{ tweet[1] }}</p>
-                {% if tweet[3] %}
-                    <div class="tweet-media">
-                        {% for media_url in tweet[3] %}
-                            <img src="{{ media_url }}" class="media">
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                <div class="tweet-actions">
-                    <a href="#" class="action-link"><i class="fa fa-reply"></i> Reply</a>
-                    <a href="#" class="action-link"><i class="fa fa-retweet"></i> Retweet</a>
-                    <a href="#" class="action-link"><i class="fa fa-heart"></i> Like</a>
-                    <a href="#" class="action-link right-align"><i class="fa fa-bookmark" aria-hidden="true"></i>Bookmark</a>
-                    <a href="#" class="action-link right-align"><i class="fa-solid fa-arrow-up-from-bracket"></i>Share</a>
-                </div>
+    <h1>Social Media Comment Scraper</h1>
+    <div class="logo">
+        <i class="fa-brands fa-twitter" onclick="showForm('twitter')"></i>
+        <i class="fa-brands fa-youtube" onclick="showForm('youtube')"></i>
+        <!-- <i class="fa-brands fa-tiktok" onclick="showForm('tiktok')"></i> -->
+        <!-- <i class="fa-brands fa-instagram" onclick="showForm('instagram')"></i> -->
+    </div>
+    <div class="form-container" id="youtubeForm">
+        <form action="/" method="post">
+            <div>
+                <label for="video_id">YouTube Video ID:</label>
+                <input type="text" id="video_id" name="video_id">
+                <button type="submit">Get YouTube Comments</button>
             </div>
-        {% endfor %}
-    {% else %}
-        <p class="no-tweets">No tweets to display.</p>
-    {% endif %}
+        </form>
+    </div>
+    <div class="form-container" id="tiktokForm">
+        <form action="/" method="post">
+            <div>
+                <label for="url">TikTok Video URL:</label>
+                <input type="text" id="url" name="url">
+                <button type="submit">Get TikTok Comments</button>
+            </div>
+        </form>
+    </div>
+    <div class="form-container" id="instagramForm">
+        <form action="/" method="post">
+            <div>
+                <label for="url">Instagram Keyword: </label>
+                <input type="text" id="url" name="url">
+                <button type="submit">Get Instagram Keyword</button>
+            </div>
+        </form>
+    </div>
+    <div class="form-container" id="twitterForm">
+        <form action="/" method="post">
+            <div>
+                <label for="keyword">Twitter Keyword:</label>
+                <input type="text" id="keyword" name="keyword">
+                <button type="submit">Search Tweets</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        function showForm(media) {
+            var youtubeForm = document.getElementById('youtubeForm');
+            var tiktokForm = document.getElementById('tiktokForm');
+            var twitterForm = document.getElementById('twitterForm');
+            var instagramForm = document.getElementById('instagramForm');
+            youtubeForm.style.display = 'none';
+            tiktokForm.style.display = 'none';
+            twitterForm.style.display = 'none';
+            instagramForm.style.display = 'none';
+            if (media === 'youtube') {
+                youtubeForm.style.display = 'block';
+            } else if (media === 'tiktok') {
+                tiktokForm.style.display = 'block';
+            } else if (media === 'twitter') {
+                twitterForm.style.display = 'block';
+            }
+              else if (media === 'instagram') {
+                instagramForm.style.display = 'block';
+              }
+            }
+    </script>
 </body>
 </html>

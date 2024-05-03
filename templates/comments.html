@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Comments</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0 auto;
+        max-width: 600px;
+    }
+    li {
+        background-color: #fff;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+</style>
+<body>
+    <h1>TikTok Comments</h1>
+    <ul>
+        {% for comment in comments %}
+        <li>
+            <div style="display: flex; align-items: center;">
+                <img src="{{ comment.user.profile_picture_url }}" alt="Profile Picture" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
+                <div>
+                    <strong>{{ comment.user.name }}</strong>
+                    <p>{{ comment.text }}</p>
+                </div>
+            </div>
+            <div style="text-align: right; margin-top: 5px;">
+                <span>Likes: {{ comment.likes }}</span>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
