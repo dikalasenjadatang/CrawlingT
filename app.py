@@ -19,7 +19,7 @@ with open('creds.json', 'r') as file:
     data = json.load(file)
 
 # YouTube API
-youtube = build('youtube', 'v3', developerKey='AIzaSyB3ssRXUCzlPiObIn0A8T0TTMGvRkRC1AA')
+youtube = build('youtube', 'v3', developerKey='developer_api_youtube')
 
 # Function to get free proxies
 def get_free_proxies():
