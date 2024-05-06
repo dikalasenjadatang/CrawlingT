@@ -1,98 +1,33 @@
-<!-- app/templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Comment Viewer</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-    color: #333;
-}
-
-h1, h2 {
-    text-align: center;
-    color: #333;
-}
-
-form {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-input[type="text"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 15px;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #ff0000;
-    color: white;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #4a54e1;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-li {
-    background: white;
-    margin-bottom: 20px; /* Increased margin for better separation */
-    padding: 20px; /* Increased padding for better spacing */
-    border-radius: 15px; /* Rounded corners */
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-strong {
-    color: #ff0000; /* Strong color */
-}
-
-p.no-tweets {
-    color: #777;
-    text-align: center;
-}
-
-    </style>
+    <title>YouTube Comments Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-    {% if video_info %}
-    <a class="action-link" href="/"><i class="fas fa-home"></i>/ Back To Home</a>
-        <h2>YouTube Results Comment</h2>
-        <ul>
-            {% for comment in video_info %}
-            <li>
-                <img src="{{ comment.profile_image }}" alt="Profile Picture" style="width: 50px; height: 50px; border-radius: 50%;"> <!-- Menambahkan gambar profil -->
-                <strong>{{ comment.author }}</strong> ({{ comment.published_at }})
-                <div>{{ comment.text }} - <i class="fa-solid fa-thumbs-up"></i> {{ comment.likes }}</div>
-                <!-- <div>{{ comment.dislikes }} - <i class="fa-solid fa-thumbs-down"></i> {{comment.dislikes }}</div> -->
-            </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p class="no-tweets">No comments to display.</p>
-    {% endif %}
+    <div class="container">
+        <h1>YouTube Comments for Hashtag</h1>
+        {% if video_info %}
+            <div class="list-group">
+                {% for comment in video_info %}
+                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ comment['author'] }}</h5>
+                            <small>{{ comment['published_at'] }}</small>
+                        </div>
+                        <p class="mb-1">{{ comment['text'] }}</p>
+                        <small>Likes: {{ comment['likes'] }}</small>
+                        <div>
+                            <img src="{{ comment['profile_image'] }}" alt="Author Image" style="height: 50px;">
+                        </div>
+                        <small>Video Title: {{ comment['video_title'] }}</small>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No comments found.</p>
+        {% endif %}
+    </div>
 </body>
 </html>

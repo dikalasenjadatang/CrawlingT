@@ -4,6 +4,7 @@ from google.oauth2.credentials import Credentials
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from textblob import TextBlob
+from flask import jsonify
 import time
 from twikit import Client
 from bs4 import BeautifulSoup
@@ -20,7 +21,7 @@ with open('creds.json', 'r') as file:
 # YouTube API
 youtube = build('youtube', 'v3', developerKey='AIzaSyB3ssRXUCzlPiObIn0A8T0TTMGvRkRC1AA')
 
-# Twitter Scraper
+# Function to get free proxies
 def get_free_proxies():
     url = 'https://www.proxysite.com/'
     response = requests.get(url)
@@ -37,34 +38,87 @@ def get_free_proxies():
         proxies.append(proxy)
     return proxies
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        if 'video_id' in request.form:  # YouTube Comments
-            video_id = request.form['video_id']
+@app.route('/api/youtube/comments', methods=['POST'])
+def youtube_comments():
+    data = request.get_json()  # Mengambil data JSON dari request
+    if 'hashtag' in data:
+        hashtag = data['hashtag']
+        search_response = youtube.search().list(
+            q=hashtag,
+            part='snippet',
+            type='video',
+            maxResults=60  # You can adjust the number of results
+        ).execute()
+
+        videos = []
+        for item in search_response.get('items', []):
+            video_id = item['id']['videoId']
+            video_title = item['snippet']['title']
+            videos.append({'video_id': video_id, 'title': video_title})
+
+        comments = []
+        for video in videos:
             request_comments = youtube.commentThreads().list(
                 part='snippet',
-                videoId=video_id,
+                videoId=video['video_id'],
                 textFormat='plainText'
-            )
-            response = request_comments.execute()
-            
-            comments = []
-            for item in response.get('items', []):
+            ).execute()
+
+            for item in request_comments.get('items', []):
                 comment = item['snippet']['topLevelComment']['snippet']
-                author_profile_image = item['snippet']['topLevelComment']['snippet']['authorProfileImageUrl']
+                author_profile_image = comment['authorProfileImageUrl']
                 comments.append({
                     'author': comment['authorDisplayName'],
                     'text': comment['textDisplay'],
                     'published_at': comment['publishedAt'],
                     'likes': comment['likeCount'],
-                    # 'dislikes': comment['dislikeCount'],
-                    'profile_image': author_profile_image  # Menambahkan URL gambar profil
+                    'profile_image': author_profile_image,
+                    'video_title': video['title']
                 })
-            
+        return jsonify(comments)
+    else:
+        return jsonify({'error': 'Hashtag is required'}), 400
+
+# Route for handling different requests
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        if 'hashtag' in request.form:  # YouTube Comments by Hashtag
+            hashtag = request.form['hashtag']
+            search_response = youtube.search().list(
+                q=hashtag,
+                part='snippet',
+                type='video',
+                maxResults=10  # You can adjust the number of results
+            ).execute()
+
+            videos = []
+            for item in search_response.get('items', []):
+                video_id = item['id']['videoId']
+                video_title = item['snippet']['title']
+                videos.append({'video_id': video_id, 'title': video_title})
+
+            comments = []
+            for video in videos:
+                request_comments = youtube.commentThreads().list(
+                    part='snippet',
+                    videoId=video['video_id'],
+                    textFormat='plainText'
+                ).execute()
+
+                for item in request_comments.get('items', []):
+                    comment = item['snippet']['topLevelComment']['snippet']
+                    author_profile_image = comment['authorProfileImageUrl']
+                    comments.append({
+                        'author': comment['authorDisplayName'],
+                        'text': comment['textDisplay'],
+                        'published_at': comment['publishedAt'],
+                        'likes': comment['likeCount'],
+                        'profile_image': author_profile_image,
+                        'video_title': video['title']
+                    })
             return render_template('youtube_results.html', video_info=comments)
 
-       
         elif 'keyword' in request.form:  # Twitter Scraper
             keyword = request.form['keyword']
             client = Client('en-US')
